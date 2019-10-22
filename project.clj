@@ -33,7 +33,8 @@
                  [ring-webjars "0.2.0"]
                  [ring/ring-core "1.7.1"]
                  [ring/ring-defaults "0.3.2"]
-                 [selmer "1.12.14"]]
+                 [selmer "1.12.14"]
+                 [day8.re-frame/tracing-stubs "0.5.1"]]
 
   :min-lein-version "2.0.0"
   
@@ -86,9 +87,10 @@
                                  [figwheel-sidecar "0.5.19"]
                                  [pjstadig/humane-test-output "0.9.0"]
                                  [prone "2019-07-08"]
-                                 [re-frisk "0.5.4.1"]
+                                 [day8.re-frame/re-frame-10x "0.4.4"]
                                  [ring/ring-devel "1.7.1"]
-                                 [ring/ring-mock "0.4.0"]]
+                                 [ring/ring-mock "0.4.0"]
+                                 [day8.re-frame/tracing "0.5.1"]]
                   :plugins      [[com.jakemccrary/lein-test-refresh "0.24.1"]
                                  [lein-doo "0.1.11"]
                                  [lein-figwheel "0.5.19"]]
@@ -98,9 +100,10 @@
                      :figwheel {:on-jsload "sample-3.core/mount-components"}
                      :compiler
                      {:output-dir "target/cljsbuild/public/js/out"
-                      :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}
+                      :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true
+                                        "day8.re_frame.tracing.trace_enabled_QMARK_" true}
                       :optimizations :none
-                      :preloads [re-frisk.preload]
+                      :preloads [day8.re-frame-10x.preload]
                       :output-to "target/cljsbuild/public/js/app.js"
                       :asset-path "/js/out"
                       :source-map true
