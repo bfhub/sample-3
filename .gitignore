@@ -13,5 +13,6 @@ profiles.clj
 .nrepl-port
 *.xml
 *.iml
+*.png
 /node_modules
 /log

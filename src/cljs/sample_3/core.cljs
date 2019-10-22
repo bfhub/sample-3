@@ -31,21 +31,28 @@
      [:div#nav-menu.navbar-menu
       {:class (when @expanded? :is-active)}
       [:div.navbar-start
-       [nav-link "#/" "Home" :home]
-       [nav-link "#/about" "About" :about]]]]))
+       [nav-link "#/" "Home" :home]]]]))
 
-(defn about-page []
-  [:section.section>div.container>div.content
-   [:img {:src "/img/warning_clojure.png"}]])
+(def result1 (r/atom 0))
+(def result2 (r/atom 0))
+(def result3 (r/atom 0))
+
+(defn add [x y result]
+  (prn "add function")
+  (POST "/api/math/plus"
+        {:headers {"Accept" "application/transit+json"}
+         :params {:x x :y y}
+         :handler #(reset! result (:total %))}))
 
 (defn home-page []
-  [:section.section>div.container>div.content
-   (when-let [docs @(rf/subscribe [:docs])]
-     [:div {:dangerouslySetInnerHTML {:__html (md->html docs)}}])])
+  [:section.section>div.container>div.content]
+  [:div.columns>div.column.is-one-third>div.column
+   [:p "2 + 3 = " @result1]
+   [:p "6 + 8 = " @result2]
+   [:p "98 + 17 = " @result3]])
 
 (def pages
-  {:home #'home-page
-   :about #'about-page})
+  {:home #'home-page})
 
 (defn page []
   [:div
@@ -57,8 +64,7 @@
 
 (def router
   (reitit/router
-    [["/" :home]
-     ["/about" :about]]))
+    [["/" :home]]))
 
 ;; -------------------------
 ;; History
