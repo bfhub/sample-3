@@ -7,6 +7,7 @@
     [goog.history.EventType :as HistoryEventType]
     [markdown.core :refer [md->html]]
     [sample-3.ajax :as ajax]
+    [ajax.core :refer [GET POST]]
     [sample-3.events]
     [reitit.core :as reitit]
     [clojure.string :as string])
@@ -37,19 +38,20 @@
 (def result2 (r/atom 0))
 (def result3 (r/atom 0))
 
-(defn add [x y result]
-  (prn "add function")
-  (POST "/api/math/plus"
-        {:headers {"Accept" "application/transit+json"}
-         :params {:x x :y y}
-         :handler #(reset! result (:total %))}))
+;(defn add [x y result]
+;  (prn "add function")
+;  (reset! result (+ x y)))
 
 (defn home-page []
-  [:section.section>div.container>div.content]
-  [:div.columns>div.column.is-one-third>div.column
-   [:p "2 + 3 = " @result1]
-   [:p "6 + 8 = " @result2]
-   [:p "98 + 17 = " @result3]])
+  ;; re-frame
+  ( let [])
+  ;; re-frame
+  (fn []
+    [:section.section>div.container>div.content]
+    [:div.columns>div.column.is-one-third>div.column
+     [:p "2 + 3 = " @result1]
+     [:p "6 + 8 = " @result2]
+     [:p "98 + 17 = " @result3]]))
 
 (def pages
   {:home #'home-page})
@@ -90,5 +92,10 @@
   
   (ajax/load-interceptors!)
   (rf/dispatch [:fetch-docs])
+
+  (add 2 3 result1)
+  (add 6 8 result2)
+  (add 98 17 result3)
+
   (hook-browser-navigation!)
   (mount-components))
