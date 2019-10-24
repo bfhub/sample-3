@@ -9,7 +9,8 @@
     [sample-3.ajax :as ajax]
     [sample-3.events]
     [reitit.core :as reitit]
-    [clojure.string :as string])
+    [clojure.string :as string]
+    [ajax.core :refer [GET POST]])
   (:import goog.History))
 
 (defn nav-link [uri title page]
@@ -33,23 +34,28 @@
       [:div.navbar-start
        [nav-link "#/" "Home" :home]]]]))
 
-(def result1 (r/atom 0))
-(def result2 (r/atom 0))
-(def result3 (r/atom 0))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; using dispatch instead of dispatch-sync ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defn submit [total]
+  [(rf/dispatch [:set-result total])])
 
-(defn add [x y result]
+(defn add [x y]
   (prn "add function")
   (POST "/api/math/plus"
         {:headers {"Accept" "application/transit+json"}
          :params {:x x :y y}
-         :handler #(reset! result (:total %))}))
+         :handler #(submit (:total %))}))
 
 (defn home-page []
-  [:section.section>div.container>div.content]
-  [:div.columns>div.column.is-one-third>div.column
-   [:p "2 + 3 = " @result1]
-   [:p "6 + 8 = " @result2]
-   [:p "98 + 17 = " @result3]])
+
+  (let [output (rf/subscribe [:output])]
+
+    (fn []
+      [:section.section>div.container>div.content]
+      [:div.columns>div.column.is-one-third>div.column
+       [:p "home-page"]
+       [:p "2 + 3 = " @output]])))
 
 (def pages
   {:home #'home-page})
@@ -89,6 +95,12 @@
   (rf/dispatch-sync [:navigate (reitit/match-by-name router :home)])
   
   (ajax/load-interceptors!)
-  (rf/dispatch [:fetch-docs])
+
+  (rf/dispatch-sync [:init:db])
+
+  (add 2 3)
+
+  ;(rf/dispatch-sync [:fetch-result])
+
   (hook-browser-navigation!)
   (mount-components))
