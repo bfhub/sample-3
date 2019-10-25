@@ -38,24 +38,57 @@
 ;; using dispatch instead of dispatch-sync ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defn submit [total]
-  [(rf/dispatch [:set-result total])])
+  (rf/dispatch [:set-result total]))
 
 (defn add [x y]
   (prn "add function")
+
   (POST "/api/math/plus"
         {:headers {"Accept" "application/transit+json"}
          :params {:x x :y y}
          :handler #(submit (:total %))}))
 
+(defn set-x [x]
+  (rf/dispatch [:set-x x]))
+
+(defn set-y [y]
+  (rf/dispatch [:set-y y]))
+
+(defn input-field [tag id data]
+  [:div.field
+   [tag
+    {:type :number
+     :value data
+     :on-change #(do
+                   (cond
+                     (= id :input-1) (set-x (js/parseInt (-> % .-target .-value)))
+                     (= id :input-2) (set-y (js/parseInt (-> % .-target .-value))))
+                   (add  @(rf/subscribe [:input-1]) @(rf/subscribe [:input-2])))}]])
+
+
+(defn- make-row [x y]
+  [:tr
+   [:td [input-field :input.input :input-1 x]]
+   [:td "+"]
+   [:td [input-field :input.input :input-2 y]]
+   [:td "="]
+   [:td @(rf/subscribe [:output])]])
+
 (defn home-page []
 
-  (let [output (rf/subscribe [:output])]
+  (let [output (rf/subscribe [:output])
+        x (rf/subscribe [:input-1])
+        y (rf/subscribe [:input-2])]
 
     (fn []
       [:section.section>div.container>div.content]
       [:div.columns>div.column.is-one-third>div.column
        [:p "home-page"]
-       [:p "2 + 3 = " @output]])))
+       [:p "2 + 3 = " @output]
+
+       [:table
+        [:tbody
+         (make-row @x @y)]]])))
 
 (def pages
   {:home #'home-page})
@@ -97,8 +130,6 @@
   (ajax/load-interceptors!)
 
   (rf/dispatch-sync [:init:db])
-
-  (add 2 3)
 
   ;(rf/dispatch-sync [:fetch-result])
 

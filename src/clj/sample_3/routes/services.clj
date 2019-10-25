@@ -60,7 +60,33 @@
              :responses {200 {:body {:total int?}}}
              :handler (fn [{{{:keys [x y]} :body} :parameters}]
                         {:status 200
-                         :body {:total (+ x y)}})}}]]
+                         :body {:total (+ x y)}})}}]
+    ["/minus"
+     {:post {:summary "plus with spec body parameters"
+             :parameters {:body {:x int?, :y int?}}
+             :responses {200 {:body {:total int?}}}
+             :handler (fn [{{{:keys [x y]} :body} :parameters}]
+                        (prn "minus" x y)
+                        {:status 200
+                         :body {:total (- x y)}})}}]
+
+    ["/multi"
+     {:post {:summary "plus with spec body parameters"
+             :parameters {:body {:x int?, :y int?}}
+             :responses {200 {:body {:total int?}}}
+             :handler (fn [{{{:keys [x y]} :body} :parameters}]
+                        (prn "multi" x y)
+                        {:status 200
+                         :body {:total (* x y)}})}}]
+
+    ["/div"
+     {:post {:summary "plus with spec body parameters"
+             :parameters {:body {:x int?, :y int?}}
+             :responses {200 {:body {:total int?}}}
+             :handler (fn [{{{:keys [x y]} :body} :parameters}]
+                        (prn "div" x y)
+                        {:status 200
+                         :body {:total (/ x y)}})}}]]
 
    ["/files"
     {:swagger {:tags ["files"]}}

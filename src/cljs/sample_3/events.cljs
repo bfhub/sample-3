@@ -18,7 +18,10 @@
   :init:db
   (fn-traced [db [_]]
     (prn "init:db")
-    (assoc db :data dd/total)))
+    (assoc db :data { :total dd/total
+                      :x dd/x
+                      :y dd/y})))
+                      ;:op dd/op})))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; adding handler for :set-result ;;
@@ -27,7 +30,25 @@
   :set-result
   (fn-traced [db [_ output]]
     (prn "set-result")
-    (assoc db :data output)))
+    (assoc-in db [:data :total] output)))
+
+(rf/reg-event-db
+  :set-x
+  (fn-traced [db [_ x]]
+             (prn "set-x")
+             (assoc-in db [:data :x] x)))
+
+(rf/reg-event-db
+  :set-y
+  (fn-traced [db [_ y]]
+             (prn "set-y")
+             (assoc-in db [:data :y] y)))
+
+;(rf/reg-event-db
+;  :set-op
+;  (fn-traced [db [_ op]]
+;             (prn "set-op")
+;             (assoc-in db [:data :op] op)))
 
 (rf/reg-event-db
   :set-docs
@@ -60,7 +81,22 @@
 (rf/reg-sub
   :output
   (fn [db _]
-    (-> db :data)))
+    (-> db :data :total)))
+
+(rf/reg-sub
+  :input-1
+  (fn [db _]
+    (-> db :data :x)))
+
+(rf/reg-sub
+  :input-2
+  (fn [db _]
+    (-> db :data :y)))
+
+;(rf/reg-sub
+;  :operation
+;  (fn [db _]
+;    (-> db :data :op)))
 
 (rf/reg-sub
   :route
