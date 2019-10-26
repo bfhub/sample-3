@@ -49,10 +49,10 @@
          :handler #(submit (:total %))}))
 
 (defn set-x [x]
-  (rf/dispatch [:set-x x]))
+  (rf/dispatch-sync [:set-x x]))
 
 (defn set-y [y]
-  (rf/dispatch [:set-y y]))
+  (rf/dispatch-sync [:set-y y]))
 
 (defn input-field [tag id data]
   [:div.field
@@ -63,7 +63,7 @@
                    (cond
                      (= id :input-1) (set-x (js/parseInt (-> % .-target .-value)))
                      (= id :input-2) (set-y (js/parseInt (-> % .-target .-value))))
-                   (add  @(rf/subscribe [:input-1]) @(rf/subscribe [:input-2])))}]])
+                   (add @(rf/subscribe [:input-1]) @(rf/subscribe [:input-2])))}]])
 
 
 (defn- make-row [x y]
@@ -126,12 +126,9 @@
 
 (defn init! []
   (rf/dispatch-sync [:navigate (reitit/match-by-name router :home)])
-  
   (ajax/load-interceptors!)
 
   (rf/dispatch-sync [:init:db])
-
-  ;(rf/dispatch-sync [:fetch-result])
 
   (hook-browser-navigation!)
   (mount-components))
