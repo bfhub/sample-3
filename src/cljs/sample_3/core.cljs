@@ -37,16 +37,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; using dispatch instead of dispatch-sync ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defn submit [total]
-  (rf/dispatch [:set-result total]))
+;(defn submit [total]
+;  (rf/dispatch [:set-result total]))
+(defn submit []
+  (rf/dispatch [:compute]))
 
-(defn add [x y]
-  (prn "add function")
-
-  (POST "/api/math/plus"
-        {:headers {"Accept" "application/transit+json"}
-         :params {:x x :y y}
-         :handler #(submit (:total %))}))
+;(defn add [x y]
+;  (prn "add function")
+;
+;  (POST "/api/math/plus"
+;        {:headers {"Accept" "application/transit+json"}
+;         :params {:x x :y y}
+;         :handler #(submit (:total %))}))
 
 (defn set-x [x]
   (rf/dispatch-sync [:set-x x]))
@@ -63,7 +65,8 @@
                    (cond
                      (= id :input-1) (set-x (js/parseInt (-> % .-target .-value)))
                      (= id :input-2) (set-y (js/parseInt (-> % .-target .-value))))
-                   (add @(rf/subscribe [:input-1]) @(rf/subscribe [:input-2])))}]])
+                   ;(add @(rf/subscribe [:input-1]) @(rf/subscribe [:input-2])))}]])
+                   (submit))}]])
 
 
 (defn- make-row [x y]

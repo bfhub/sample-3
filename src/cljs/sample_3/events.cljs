@@ -44,12 +44,12 @@
              (prn "set-y")
              (assoc-in db [:data :y] y)))
 
-;(rf/reg-event-db
-;  :compute
-;  (fn-traced [db _]
-;             (prn "compute")
-;             (:set-result (+ (-> db :data :x) (-> db :data :y)))))
-;              (assoc db [:data :total] (+ (-> db :data :x) (-> db :data :y))))))
+(rf/reg-event-db
+  :compute
+  (fn-traced [db _]
+             (prn "compute")
+             ;(:set-result (+ (-> db :data :x) (-> db :data :y)))))
+             (assoc-in db [:data :total] (+ (-> db :data :x) (-> db :data :y)))))
 
 ;(rf/reg-event-db
 ;  :set-op
@@ -57,10 +57,6 @@
 ;             (prn "set-op")
 ;             (assoc-in db [:data :op] op)))
 
-(rf/reg-event-db
-  :compute
-  (fn-traced [db _]
-             ()))
 
 (rf/reg-event-db
   :set-docs
