@@ -28,9 +28,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (rf/reg-event-db
   :set-result
-  (fn-traced [db [_ output]]
-    (prn "set-result")
-    (assoc-in db [:data :total] output)))
+  (fn-traced [db [_ val]]
+    (prn "set-result" val)
+    (assoc-in db [:data :total] (:total val))))
 
 (rf/reg-event-db
   :set-x
@@ -49,13 +49,35 @@
   (fn-traced [db [_ op]]
              (prn "set-op")
              (assoc-in db [:data :op] op)))
+;
+;(rf/reg-event-db
+;  :compute
+;  (fn-traced [db _]
+;             (prn "compute")
+;             ;(:set-result (+ (-> db :data :x) (-> db :data :y)))))
+;             (assoc-in db [:data :total] (+ (-> db :data :x) (-> db :data :y)))))
 
-(rf/reg-event-db
-  :compute
-  (fn-traced [db _]
-             (prn "compute")
-             ;(:set-result (+ (-> db :data :x) (-> db :data :y)))))
-             (assoc-in db [:data :total] (+ (-> db :data :x) (-> db :data :y)))))
+(rf/reg-event-fx
+  :compute-result
+  (fn-traced
+    [cofx [_ _]]
+    (let [x    (-> (:db cofx ):data :x)
+          y    (-> (:db cofx ):data :y)
+          op   (-> (:db cofx ):data :op)
+          path (str "/api/math/"
+                    (cond
+                      (= op "+") "plus"
+                      (= op "-") "minus"
+                      (= op "*") "multi"
+                      (= op "/") "div"))]
+      (prn ":compute-result" x y op path)
+      {:http-xhrio {:method          :post
+                    :params          {:x x :y y}
+                    :uri             path
+                    :format          (ajax/json-request-format)
+                    :response-format (ajax/json-response-format {:keywords? true})
+                    :on-success      [:set-result]
+                    :on-failure      [:common/set-error]}})))
 
 (rf/reg-event-db
   :set-docs

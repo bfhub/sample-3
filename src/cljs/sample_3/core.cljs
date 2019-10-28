@@ -40,7 +40,7 @@
 ;(defn submit [total]
 ;  (rf/dispatch [:set-result total]))
 (defn submit []
-  (rf/dispatch [:compute]))
+  (rf/dispatch [:compute-result]))
 
 ;(defn add [x y]
 ;  (prn "add function")
@@ -76,7 +76,9 @@
   [:tr
    [:td [input-field :input.input :input-1 x]]
    [:td [:select {
-                  :on-change #(set-operator (-> % .-target .-value))}
+                  :on-change #(do
+                                (set-operator (-> % .-target .-value))
+                                (submit))}
          [:option "+"]
          [:option "-"]
          [:option "*"]
