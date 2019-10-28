@@ -34,6 +34,23 @@
       [:div.navbar-start
        [nav-link "#/" "Home" :home]]]]))
 
+;;;;;;;;;;;;;;;;;;;;;
+;; Sample Task # 3 ;;
+;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;
+;;  Title ;;
+;;;;;;;;;;;;;
+(defn title []
+  [:div.hero>div.hero-body>div.content.box
+   [:h1.title {:style
+               {:color "DarkBlue"}}
+    "Calculation"]
+   [:div
+    [:p {:style
+         {:color "DarkBlue"}}
+     "welcome to sample # 3"]]])
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; using dispatch instead of dispatch-sync ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -94,11 +111,8 @@
         y (rf/subscribe [:input-2])]
 
     (fn []
-      [:section.section>div.container>div.content]
-      [:div.columns>div.column.is-one-third>div.column
-       [:p "home-page"]
-       [:p "2 + 3 = " @output]
-
+      [:section.section>div.container>div.content
+       [title]
        [:table
         [:tbody
          (make-row @x @y)]]])))
