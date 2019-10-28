@@ -56,6 +56,9 @@
 (defn set-y [y]
   (rf/dispatch-sync [:set-y y]))
 
+(defn set-operator [op]
+  (rf/dispatch-sync [:set-op op]))
+
 (defn input-field [tag id data]
   [:div.field
    [tag
@@ -72,7 +75,12 @@
 (defn- make-row [x y]
   [:tr
    [:td [input-field :input.input :input-1 x]]
-   [:td "+"]
+   [:td [:select {
+                  :on-change #(set-operator (-> % .-target .-value))}
+         [:option "+"]
+         [:option "-"]
+         [:option "*"]
+         [:option "/"]]]
    [:td [input-field :input.input :input-2 y]]
    [:td "="]
    [:td @(rf/subscribe [:output])]])
